@@ -1,3 +1,4 @@
+#Creating mysql ec2-instance
 module "mysql" {
   source = "terraform-aws-modules/ec2-instance/aws"
   ami    = data.aws_ami.expense.id
@@ -15,7 +16,7 @@ module "mysql" {
     }
   )
 }
-
+#Creating backend ec2-instance
 module "backend" {
   source = "terraform-aws-modules/ec2-instance/aws"
   ami    = data.aws_ami.expense.id
@@ -33,7 +34,7 @@ module "backend" {
     }
   )
 }
-
+#Creating frontend ec2-instance
 module "frontend" {
   source = "terraform-aws-modules/ec2-instance/aws"
   ami    = data.aws_ami.expense.id
@@ -51,7 +52,7 @@ module "frontend" {
     }
   )
 }
-
+#Creating ansible ec2-instance, and adding ansible playbooks
 module "ansible" {
   source = "terraform-aws-modules/ec2-instance/aws"
   ami    = data.aws_ami.expense.id
@@ -60,7 +61,7 @@ module "ansible" {
   instance_type          = "t2.micro"
   vpc_security_group_ids = [local.ansible_sg_id]
   subnet_id              = local.public_subnet_id
-  user_data              = file("expense.sh")
+  user_data              = file("expense.sh")    # ansible scripts to run at the time of creation.
   tags = merge(
     var.common_tags,
     var.ansible_tags,
@@ -70,6 +71,7 @@ module "ansible" {
   )
 }
 
+#creating Route53 records 
 module "records" {
   source = "terraform-aws-modules/route53/aws//modules/records"
 
